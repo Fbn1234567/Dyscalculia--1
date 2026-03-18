@@ -1,52 +1,73 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+    <meta charset="UTF-8">
     <title>Test History</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
-    <div class="navbar">Dyscalculia Detection System</div>
+    <div class="navbar">🧠 Dyscalculia Detection System</div>
     <div class="container">
         <div class="card">
-            <h2>Test History</h2>
-            <table class="history-table">
+            <h2>📋 My Test History</h2>
+            {% if results %}
+            <table class="history-table" style="margin-top:20px;">
                 <thead>
                     <tr>
-                        <th>ANS Accuracy</th>
-                        <th>ANS RT</th>
-                        <th>Working Memory</th>
-                        <th>Symbolic Accuracy</th>
-                        <th>Symbolic RT</th>
-                        <th>Risk Level</th>
                         <th>Date</th>
+                        <th>Age Group</th>
+                        <th>ANS Accuracy</th>
+                        <th>ANS RT (s)</th>
+                        <th>Working Memory</th>
+                        <th>Sym Accuracy</th>
+                        <th>Sym RT (ms)</th>
+                        <th>Result</th>
+                        <th>Confidence</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for r in results %}
                     <tr>
-                        <td>{{ "%.2f"|format(r.ans_acc) }}</td>
-                        <td>{{ "%.2f"|format(r.ans_rt) }}</td>
-                        <td>{{ r.wm_k }}</td>
-                        <td>{{ "%.2f"|format(r.sym_acc) }}</td>
-                        <td>{{ "%.2f"|format(r.sym_rt) }}</td>
                         <td>
-                            {% if r.risk_level == "Highest Risk" %}
-                                <span class="risk-high">Highest Risk</span>
-                            {% elif r.risk_level == "Medium Risk" %}
-                                <span class="risk-medium">Medium Risk</span>
-                            {% elif r.risk_level == "Lowest Risk" %}
-                                <span class="risk-low">Lowest Risk</span>
+                            {{ r.created_at.strftime("%d %b %Y") }}<br>
+                            <small style="color:var(--text-secondary);">{{ r.created_at.strftime("%H:%M") }}</small>
+                        </td>
+                        <td>
+                            <small style="color:var(--text-secondary);">{{ r.age_group or "—" }}</small>
+                        </td>
+                        <td>{{ "%.0f%%"|format((r.ans_acc or 0) * 100) }}</td>
+                        <td>{{ "%.2f"|format(r.ans_rt or 0) }}</td>
+                        <td>{{ r.wm_k or "—" }}</td>
+                        <td>{{ "%.0f%%"|format((r.sym_acc or 0) * 100) }}</td>
+                        <td>{{ "%.0f"|format(r.sym_rt or 0) }}</td>
+                        <td>
+                            {% if r.risk_level and "Dyscalculia Detected" in r.risk_level %}
+                            <span class="risk-high">Dyscalculia</span>
                             {% else %}
-                                <span>No Dyscalculia</span>
+                            <span class="risk-low">No Dyscalculia</span>
                             {% endif %}
                         </td>
-                        <td>{{ r.created_at.strftime("%d %b %Y") }}<br><small>{{ r.created_at.strftime("%H:%M") }}</small></td>
+                        <td>
+                            {% if r.confidence %}
+                            {{ "%.1f"|format(r.confidence) }}%
+                            {% else %}
+                            —
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            <a href="/dashboard" class="back-btn">Back to Dashboard</a>
+            {% else %}
+            <p style="color:var(--text-secondary);margin-top:20px;">
+                No test results yet. Complete an assessment to see your history.
+            </p>
+            {% endif %}
+            <a href="/dashboard" class="back-btn">← Back to Dashboard</a>
         </div>
     </div>
 </body>
+
 </html>
