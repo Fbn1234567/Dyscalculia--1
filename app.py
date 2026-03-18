@@ -462,7 +462,17 @@ def history():
     try:
         cur = conn.cursor(cursor_factory=RealDictCursor)
         cur.execute(
-            "SELECT ans_acc, ans_rt, wm_k, sym_acc, sym_rt, risk_level, created_at FROM results WHERE student_email=%s ORDER BY created_at DESC",
+            """SELECT
+                  COALESCE(ans_acc, 0)     AS ans_acc,
+                  COALESCE(ans_rt, 0)      AS ans_rt,
+                  COALESCE(wm_k, 0)        AS wm_k,
+                  COALESCE(sym_acc, 0)     AS sym_acc,
+                  COALESCE(sym_rt, 0)      AS sym_rt,
+                  COALESCE(risk_level, '') AS risk_level,
+                  created_at
+               FROM results
+               WHERE student_email=%s
+               ORDER BY created_at DESC""",
             (session["user"],),
         )
         results = cur.fetchall()
