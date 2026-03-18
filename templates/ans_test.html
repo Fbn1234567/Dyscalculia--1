@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>ANS Dot Comparison Test</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -11,6 +12,7 @@
             flex-wrap: wrap;
             margin-top: 30px;
         }
+
         .canvas-box {
             cursor: pointer;
             border-radius: 14px;
@@ -19,19 +21,24 @@
             overflow: hidden;
             transition: transform .2s, box-shadow .2s;
         }
+
         .canvas-box:hover {
             transform: translateY(-4px) scale(1.03);
             box-shadow: var(--shadow-xl);
             border-color: var(--blue);
         }
-        canvas { display: block; background: white; }
+
+        canvas {
+            display: block;
+            background: white;
+        }
     </style>
     <script>
         let startTime;
         window.onload = function () {
             startTime = new Date().getTime();
             drawDots("leftCanvas", {{ left }});
-            drawDots("rightCanvas", {{ right }});
+        drawDots("rightCanvas", {{ right }});
         }
         function drawDots(canvasId, count) {
             let canvas = document.getElementById(canvasId);
@@ -54,11 +61,12 @@
         }
     </script>
 </head>
+
 <body>
     <div class="navbar">Dyscalculia Detection System</div>
     <div class="container">
         <div class="card center">
-            <h2>ANS Task — Trial {{ trial }} / 5</h2>
+            <h2>ANS Task — Trial {{ trial }} / 10</h2>
             <p style="color:var(--text-secondary);margin-bottom:10px;">Click the side with <b>more dots</b></p>
             <form id="form" method="POST" action="/submit_ans">
                 <input type="hidden" name="choice" id="choice">
@@ -75,4 +83,5 @@
         </div>
     </div>
 </body>
+
 </html>
