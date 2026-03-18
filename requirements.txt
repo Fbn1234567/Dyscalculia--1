@@ -1,0 +1,6 @@
+flask
+flask-bcrypt
+psycopg2-binary
+scikit-learn
+numpy
+gunicorn
